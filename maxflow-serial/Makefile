@@ -18,4 +18,8 @@ $(PROG): $(OBJS)
 clean:
 	rm -f $(PROG) $(OBJS)
 
+test:
+	./maxflow-serial -f test_graph.txt  -s 0 -t 6
+	./maxflow-serial -f test2.txt  -s 0 -t 6
+
 .PHONY: all clean

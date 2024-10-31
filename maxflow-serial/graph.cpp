@@ -32,6 +32,7 @@ void CSRGraph::buildFromTxtFile(const std::string &filename) {
   }
   std::string line;
   std::unordered_map<int, std::vector<int>> adjacency_list;
+  std::unordered_map<int, std::vector<int>> cap_list;
   int cnt = 0;
   while (std::getline(file, line)) {
     std::stringstream ss(line);
@@ -40,9 +41,10 @@ void CSRGraph::buildFromTxtFile(const std::string &filename) {
 
     if (ss.str()[0] == '#')
       continue;
-    int from, to;
-    ss >> from >> to;
+    int from, to, cap;
+    ss >> from >> to >> cap;
     adjacency_list[from].push_back(to);
+    cap_list[from].push_back(cap);
     cnt++;
   }
 
@@ -57,7 +59,9 @@ void CSRGraph::buildFromTxtFile(const std::string &filename) {
     sort(adjacency_list[i].begin(), adjacency_list[i].end());
     for (int neighbor : adjacency_list[i]) {
       destinations.push_back(neighbor);
-      capacities.push_back(1);
+    }
+    for (int cap: cap_list[i]) {
+      capacities.push_back(cap);
     }
     offsets.push_back(destinations.size());
   }
@@ -492,7 +496,7 @@ ResidualGraph::push(int v)
       backward_flows[i] += flow;
       excesses[v] -= flow;
       excesses[w] += flow;
-      PRINTF("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
+      printf("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
       return true;
     }
   }
@@ -509,7 +513,7 @@ ResidualGraph::push(int v)
       forward_flows[push_index] += flow;
       excesses[v] -= flow;
       excesses[w] += flow;
-      PRINTF("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
+      printf("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
       return true;
     }
   }
@@ -561,8 +565,11 @@ ResidualGraph::maxflow(int source, int sink)
     printf("No path from source to sink\n");
     return;
   }
-
+  std::cout << "brefore preflow: \n";
+  print();
   preflow(source);
+  std::cout << "after preflow: \n";
+  print();
 
   printf("Preflow done\n");
   printf("Excess total: %d\n", Excess_total);
@@ -575,11 +582,39 @@ ResidualGraph::maxflow(int source, int sink)
     /* If there is an outgoing edge (v, w) of v in Gf with h(v) = h(w) + 1 */
     //printf("#active nodes: %d\n", countActiveNodes());
     if (!push(active_node)) {
-      PRINTF("Relabeling %d\n", active_node);
+      printf("Relabeling %d\n", active_node);
       relabel(active_node);
     }
     active_node = findActiveNode();
+
   }
+
+  print();
+  std::cout << "delete:\n";
+  for(int u = 0; u < num_nodes; u++){
+    for (int i = offsets[u]; i < offsets[u + 1]; ++i) {
+      int dest = destinations[i];
+      int cap = capacities[i];
+      int bflow = backward_flows[i];
+      int fflow = forward_flows[i];
+
+      if(cap != 0 && cap == fflow){
+        printf("%d --%d--> %d\n", u, cap, dest);
+      }
+    }
+  }
+
+  std::cout << "heights: ";
+  for(int i = 0; i < num_nodes; i ++){
+      printf("%d ", heights[i]);
+  }
+  std::cout << "\n";
+
+  std::cout << "excesses: ";
+  for(int i = 0; i < num_nodes; i ++){
+      printf("%d ", excesses[i]);
+  }
+  std::cout << "\n";
 
 
   /* Calculate Max flow */
