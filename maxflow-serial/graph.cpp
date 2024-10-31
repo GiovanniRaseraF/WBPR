@@ -555,6 +555,34 @@ ResidualGraph::countActiveNodes(void)
   return count;
 }
 
+void ResidualGraph::printGraph() const {
+  std::vector<int> g(num_nodes*num_nodes, 0);
+  std::vector<int> ff(num_nodes*num_nodes, 0);
+  std::vector<int> bf(num_nodes*num_nodes, 0);
+  for(int u = 0; u < num_nodes; u++){
+    for (int i = offsets[u]; i < offsets[u + 1]; ++i) {
+      int dest = destinations[i];
+      int cap = capacities[i];
+      int bflow = backward_flows[i];
+      int fflow = forward_flows[i];
+
+      g[u*num_nodes+dest] = cap;
+      ff[u*num_nodes+dest] = fflow;
+      bf[u*num_nodes+dest] = bflow;
+    }
+  }
+  for(int u = 0; u < num_nodes; u++){
+    for(int v = 0; v < num_nodes; v++){
+      int c = g[u*num_nodes+v];
+      int f = ff[u*num_nodes+v];
+      int b = bf[u*num_nodes+v];
+      //printf("(%d, f%d, b%d)", c, f, b);
+      printf("(%d)", c);
+    }
+    std::cout << std::endl;
+  }
+}
+
 void
 ResidualGraph::maxflow(int source, int sink)
 {
@@ -590,6 +618,7 @@ ResidualGraph::maxflow(int source, int sink)
   }
 
   print();
+  printGraph();
   std::cout << "delete:\n";
   for(int u = 0; u < num_nodes; u++){
     for (int i = offsets[u]; i < offsets[u + 1]; ++i) {

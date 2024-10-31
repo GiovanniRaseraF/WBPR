@@ -67,6 +67,7 @@ public:
 
     void buildFromCSRGraph(const CSRGraph &graph);
 
+    void printGraph() const;
     void print() const;
 
     void preflow(int source);
