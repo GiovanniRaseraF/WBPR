@@ -210,6 +210,30 @@ void push_relabel(int algo_type, int V, int E, int source, int sink, int *cpu_he
         // printExcessFlow(V,cpu_excess_flow);
 
     }
+
+    std::cout << std::setw(30) << std::left << "int height[V]{";
+    for (int i=0;i < V; i++) {
+        printf("%d, ", cpu_height[i]);
+    }
+    printf("};\n");
+
+    std::cout << std::setw(30) << std::left << "int excess_flow[V]{";
+    for (int i=0; i < V; i++) {
+        printf("%d, ", cpu_excess_flow[i]);
+    }
+    printf("};\n");
+
+    std::cout << std::setw(30) << std::left << "int fflow[V]{";
+    for (int i=0; i < E; i++) {
+        printf("%d, ", cpu_fflows[i]);
+    }
+    printf("};\n");
+
+    std::cout << std::setw(30) << std::left << "int bflow[V]{";
+    for (int i=0; i < E; i++) {
+        printf("%d, ", cpu_bflows[i]);
+    }
+    printf("};\n");
     printf("Total kernel time: %.6f ms\n", totalMilliseconds);
 
 #ifdef WORKLOAD
