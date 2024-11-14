@@ -404,62 +404,74 @@ void ResidualGraph::buildFromCSRGraph(const CSRGraph &graph) {
 
 }
 
-void ResidualGraph::print() const
-{
-  printf("Residual graph:\n");
-  printf("Offsets: ");
+void ResidualGraph::print() const{
+  printf("int offsets[numNodes+1]{");
   for (int i=0; i < num_nodes + 1; i++) {
-      printf("%d ", offsets[i]);
+      printf("%d, ", offsets[i]);
   }
-  printf("\n");
-  printf("Destinations: ");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d ", destinations[i]);
-  }
-  printf("\n");
-  printf("Capacities: ");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d ", capacities[i]);
-  }
-  printf("\n");
-  printf("Forward Flow: ");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d ", forward_flows[i]);
-  }
+  printf("};\n");
 
-  printf("\n");
-  printf("Backward Flows: ");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d ", backward_flows[i]);
-  }
-
-  printf("\n");
-  printf("Roffsets: ");
+  printf("int rOffsets[numNodes+1]{");
   for (int i=0; i < num_nodes + 1; i++) {
-      printf("%d ", roffsets[i]);
+      printf("%d, ", roffsets[i]);
   }
-  printf("\n");
-  printf("Rdestinations: ");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d ", rdestinations[i]);
-  }
-  printf("\n");
-  printf("Flow Index: ");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d ", flow_index[i]);
-  }
-  printf("\n");
+  printf("};\n");
 
-  printf("Heights: ");
-  for (int i=0; i < num_nodes; i++) {
-      printf("%d ", heights[i]);
+  printf("int destinations[numEdges]{");
+  for (int i=0; i < num_edges; i++) {
+      printf("%d, ", destinations[i]);
   }
-  printf("\n");
-  printf("Excesses: ");
-  for (int i=0; i < num_nodes; i++) {
-      printf("%d ", excesses[i]);
+  printf("};\n");
+
+  printf("int rDestinations[numEdges]{");
+  for (int i=0; i < num_edges; i++) {
+      printf("%d, ", rdestinations[i]);
   }
-  printf("\n");
+  printf("};\n");
+
+  printf("int capacities[numEdges]{");
+  for (int i=0; i < num_edges; i++) {
+      printf("%d, ", capacities[i]);
+  }
+  printf("};\n");
+
+  printf("int rCapacities[numEdges]{");
+  for (int i=0; i < num_edges; i++) {
+      printf("%d, ", capacities[i]);
+  }
+  printf("};\n");
+
+  printf("int flowIndex[numEdges]{");
+  for (int i=0; i < num_edges; i++) {
+      printf("%d, ", flow_index[i]);
+  }
+  printf("};\n");
+
+  printf("int heights[numNodes]{");
+  for (int i=0; i < num_nodes; i++) {
+      printf("%d, ", heights[i]);
+  }
+  printf("};\n");
+
+  printf("int forwardFlow[numEdges]{");
+  for (int i=0; i < num_edges; i++) {
+      printf("%d, ", forward_flows[i]);
+  }
+  printf("};\n");
+
+  printf("int backwardFlows[numEdges]{");
+  for (int i=0; i < num_edges; i++) {
+      printf("%d, ", backward_flows[i]);
+  }
+  printf("};\n");
+
+  printf("int excesses[numNodes]{");
+  for (int i=0; i < num_nodes; i++) {
+      printf("%d, ", excesses[i]);
+  }
+  printf("};\n");
+
+  printf("int excessTotal[1]{%d};\n", Excess_total);
 }
 
 
