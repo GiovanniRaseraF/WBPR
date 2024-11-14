@@ -13,7 +13,7 @@ def randomGenerator(num_nodes, num_edges, max_weight):
         dst = random.randint(0, num_nodes - 1)
         while dst == src:  # Ensure the destination is different from the source
             dst = random.randint(0, num_nodes - 1)
-        weight = random.randrange(max_weight)  # Assign a random weight between 0.1 and 10
+        weight = random.randint(1, max_weight)  # Assign a random weight between 0.1 and 10
         G.add_edge(src, dst, weight=weight)
 
     # Select source and sink vertices for maximum flow algorithm
@@ -46,7 +46,8 @@ if __name__ == '__main__':
     edgelist, source, sink = randomGenerator(args.nodes, args.edges, args.weight_range)
 
     # Store the graph in a file and print the source and sink vertices
-    with open('edgelist.txt', 'w') as f:
+    with open(args.output, 'w') as f:
+        f.write('# Nodes: {} Edges: {}\n'.format(args.nodes, args.edges))
         for edge in edgelist:
             f.write('{} {} {}\n'.format(edge[0], edge[1], edge[2]))
     
