@@ -41,22 +41,9 @@ void push_relabel(int algo_type, int V, int E, int source, int sink, int *cpu_he
                 int* gpu_roffsets, int* gpu_rdestinations, int* gpu_flow_idx, 
                 int* gpu_avq, int* gpu_cycle)
 {
-    /* Instead of checking for overflowing vertices(as in the sequential push relabel),
-     * sum of excess flow values of sink and source are compared against Excess_total 
-     * If the sum is lesser than Excess_total, 
-     * it means that there is atleast one more vertex with excess flow > 0, apart from source and sink
-     */
-
-    /* declaring the mark and scan boolean arrays used in the global_relabel routine outside the while loop 
-     * This is not to lose the mark values if it goes out of scope and gets redeclared in the next iteration 
-     */
-    
     bool *mark,*scanned;
     mark = (bool*)malloc(V*sizeof(bool));
     scanned = (bool*)malloc(V*sizeof(bool));
-
-
-
 
     CudaTimer timer;
     float totalMilliseconds = 0.0f;
@@ -70,27 +57,9 @@ void push_relabel(int algo_type, int V, int E, int source, int sink, int *cpu_he
     cudaGetDeviceProperties(&deviceProp, device);
     dim3 num_blocks(deviceProp.multiProcessorCount * numBlocksPerSM);
     dim3 block_size(numThreadsPerBlock);
-    // dim3 num_blocks(1);
-    // dim3 block_size(64);
 
     // Calculate the usage of shared memory
     size_t sharedMemSize = 3 * block_size.x * sizeof(int);
-
-#ifdef WORKLOAD
-    // Caculate the total number of warps
-    int num_warps = (block_size.x * num_blocks.x) / 32;
-    
-    // Allocate device buffer for warp execution time
-    unsigned long long *gpu_warpExecutionTime;
-    CHECK(cudaMalloc((void**)&gpu_warpExecutionTime, num_warps*sizeof(unsigned long long)));
-
-    // Allocate host buffer for warp execution time
-    unsigned long long *cpuWarpExecution = (unsigned long long*)malloc(num_warps*sizeof(unsigned long long));
-    unsigned long long *tempWarpExecution = (unsigned long long*)malloc(num_warps*sizeof(unsigned long long));
-    for (int i = 0; i < num_warps; i++) {
-        cpuWarpExecution[i] = 0;
-    }
-#endif // WORKLOAD
 
     // Print the configuration
     // Print GPU device name
@@ -115,12 +84,10 @@ void push_relabel(int algo_type, int V, int E, int source, int sink, int *cpu_he
     {
         mark[i] = false;
     }
-    //for (int i = 0; i < 3; i++)
     while((cpu_excess_flow[source] + cpu_excess_flow[sink]) < *Excess_total)
     {
         printf("cpu_excess_flow[source]: %d, cpu_excess_flow[sink]: %d\n",cpu_excess_flow[source], cpu_excess_flow[sink]);
 
-        //printf("gpu_excess_flow[source]: %d, gpu_excess_flow[sink]: %d\n",gpu_excess_flow[source], gpu_excess_flow[sink]);
         // copying height values to CUDA device global memory
         CHECK(cudaMemcpy(gpu_height,cpu_height,V*sizeof(int),cudaMemcpyHostToDevice));
         CHECK(cudaMemcpy(gpu_excess_flow, cpu_excess_flow, V*sizeof(int), cudaMemcpyHostToDevice));
@@ -173,8 +140,6 @@ void push_relabel(int algo_type, int V, int E, int source, int sink, int *cpu_he
         cudaDeviceSynchronize();
         timer.stop();
         totalMilliseconds += timer.elapsed();
-
-
 
         printf("Kernel invoked\n");
 
