@@ -508,7 +508,7 @@ ResidualGraph::push(int v)
       backward_flows[i] += flow;
       excesses[v] -= flow;
       excesses[w] += flow;
-      printf("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
+      //printf("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
       return true;
     }
   }
@@ -525,7 +525,7 @@ ResidualGraph::push(int v)
       forward_flows[push_index] += flow;
       excesses[v] -= flow;
       excesses[w] += flow;
-      printf("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
+      //printf("Pushing flow %d from %d(%d) to %d(%d)\n", flow, v, excesses[v], w, excesses[w]);
       return true;
     }
   }
@@ -617,45 +617,44 @@ ResidualGraph::maxflow(int source, int sink)
 
 
   int active_node = findActiveNode();
-
   while(active_node != -1) {
     /* If there is an outgoing edge (v, w) of v in Gf with h(v) = h(w) + 1 */
     //printf("#active nodes: %d\n", countActiveNodes());
     if (!push(active_node)) {
-      printf("Relabeling %d\n", active_node);
+      //printf("Relabeling %d\n", active_node);
       relabel(active_node);
     }
     active_node = findActiveNode();
 
   }
 
-  print();
-  printGraph();
-  std::cout << "delete:\n";
-  for(int u = 0; u < num_nodes; u++){
-    for (int i = offsets[u]; i < offsets[u + 1]; ++i) {
-      int dest = destinations[i];
-      int cap = capacities[i];
-      int bflow = backward_flows[i];
-      int fflow = forward_flows[i];
+  // print();
+  // printGraph();
+  // std::cout << "delete:\n";
+  // for(int u = 0; u < num_nodes; u++){
+  //   for (int i = offsets[u]; i < offsets[u + 1]; ++i) {
+  //     int dest = destinations[i];
+  //     int cap = capacities[i];
+  //     int bflow = backward_flows[i];
+  //     int fflow = forward_flows[i];
 
-      if(cap != 0 && cap == fflow){
-        printf("%d --%d--> %d\n", u, cap, dest);
-      }
-    }
-  }
+  //     if(cap != 0 && cap == fflow){
+  //       printf("%d --%d--> %d\n", u, cap, dest);
+  //     }
+  //   }
+  // }
 
-  std::cout << "heights: ";
-  for(int i = 0; i < num_nodes; i ++){
-      printf("%d ", heights[i]);
-  }
-  std::cout << "\n";
+  // std::cout << "heights: ";
+  // for(int i = 0; i < num_nodes; i ++){
+  //     printf("%d ", heights[i]);
+  // }
+  // std::cout << "\n";
 
-  std::cout << "excesses: ";
-  for(int i = 0; i < num_nodes; i ++){
-      printf("%d ", excesses[i]);
-  }
-  std::cout << "\n";
+  // std::cout << "excesses: ";
+  // for(int i = 0; i < num_nodes; i ++){
+  //     printf("%d ", excesses[i]);
+  // }
+  // std::cout << "\n";
 
 
   /* Calculate Max flow */
