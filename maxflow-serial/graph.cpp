@@ -11,15 +11,16 @@
 #include "graph.h"
 #include "assert.h"
 #include "mmio.h"
+#include <chrono>
 
 CSRGraph::CSRGraph(const std::string &filename) {
   if (filename.substr(filename.find_last_of(".") + 1) == "txt") {
     buildFromTxtFile(filename);
   } else if (filename.substr(filename.find_last_of(".") + 1) == "mmio") {
-    std::cout << "buildFromMmioFile: " << filename << std::endl;
+    //std::cout << "buildFromMmioFile: " << filename << std::endl;
     buildFromMmioFile(filename);
   } else {
-    std::cerr << "Unsupported file type for: " << filename << '\n';
+    //std::cerr << "Unsupported file type for: " << filename << '\n';
     exit(1);
   }
 }
@@ -405,73 +406,73 @@ void ResidualGraph::buildFromCSRGraph(const CSRGraph &graph) {
 }
 
 void ResidualGraph::print() const{
-  printf("int offsets[numNodes+1]{");
-  for (int i=0; i < num_nodes + 1; i++) {
-      printf("%d, ", offsets[i]);
-  }
-  printf("};\n");
+  // printf("int offsets[numNodes+1]{");
+  // for (int i=0; i < num_nodes + 1; i++) {
+  //     printf("%d, ", offsets[i]);
+  // }
+  // printf("};\n");
 
-  printf("int rOffsets[numNodes+1]{");
-  for (int i=0; i < num_nodes + 1; i++) {
-      printf("%d, ", roffsets[i]);
-  }
-  printf("};\n");
+  // printf("int rOffsets[numNodes+1]{");
+  // for (int i=0; i < num_nodes + 1; i++) {
+  //     printf("%d, ", roffsets[i]);
+  // }
+  // printf("};\n");
 
-  printf("int destinations[numEdges]{");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d, ", destinations[i]);
-  }
-  printf("};\n");
+  // printf("int destinations[numEdges]{");
+  // for (int i=0; i < num_edges; i++) {
+  //     printf("%d, ", destinations[i]);
+  // }
+  // printf("};\n");
 
-  printf("int rDestinations[numEdges]{");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d, ", rdestinations[i]);
-  }
-  printf("};\n");
+  // printf("int rDestinations[numEdges]{");
+  // for (int i=0; i < num_edges; i++) {
+  //     printf("%d, ", rdestinations[i]);
+  // }
+  // printf("};\n");
 
-  printf("int capacities[numEdges]{");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d, ", capacities[i]);
-  }
-  printf("};\n");
+  // printf("int capacities[numEdges]{");
+  // for (int i=0; i < num_edges; i++) {
+  //     printf("%d, ", capacities[i]);
+  // }
+  // printf("};\n");
 
-  printf("int rCapacities[numEdges]{");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d, ", capacities[i]);
-  }
-  printf("};\n");
+  // printf("int rCapacities[numEdges]{");
+  // for (int i=0; i < num_edges; i++) {
+  //     printf("%d, ", capacities[i]);
+  // }
+  // printf("};\n");
 
-  printf("int flowIndex[numEdges]{");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d, ", flow_index[i]);
-  }
-  printf("};\n");
+  // printf("int flowIndex[numEdges]{");
+  // for (int i=0; i < num_edges; i++) {
+  //     printf("%d, ", flow_index[i]);
+  // }
+  // printf("};\n");
 
-  printf("int heights[numNodes]{");
-  for (int i=0; i < num_nodes; i++) {
-      printf("%d, ", heights[i]);
-  }
-  printf("};\n");
+  // printf("int heights[numNodes]{");
+  // for (int i=0; i < num_nodes; i++) {
+  //     printf("%d, ", heights[i]);
+  // }
+  // printf("};\n");
 
-  printf("int forwardFlow[numEdges]{");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d, ", forward_flows[i]);
-  }
-  printf("};\n");
+  // printf("int forwardFlow[numEdges]{");
+  // for (int i=0; i < num_edges; i++) {
+  //     printf("%d, ", forward_flows[i]);
+  // }
+  // printf("};\n");
 
-  printf("int backwardFlows[numEdges]{");
-  for (int i=0; i < num_edges; i++) {
-      printf("%d, ", backward_flows[i]);
-  }
-  printf("};\n");
+  // printf("int backwardFlows[numEdges]{");
+  // for (int i=0; i < num_edges; i++) {
+  //     printf("%d, ", backward_flows[i]);
+  // }
+  // printf("};\n");
 
-  printf("int excesses[numNodes]{");
-  for (int i=0; i < num_nodes; i++) {
-      printf("%d, ", excesses[i]);
-  }
-  printf("};\n");
+  // printf("int excesses[numNodes]{");
+  // for (int i=0; i < num_nodes; i++) {
+  //     printf("%d, ", excesses[i]);
+  // }
+  // printf("};\n");
 
-  printf("int excessTotal[1]{%d};\n", Excess_total);
+  // printf("int excessTotal[1]{%d};\n", Excess_total);
 }
 
 
@@ -490,7 +491,6 @@ ResidualGraph::preflow(int source)
     forward_flows[i] = 0; // residualFlow[(source, dest)] = 0
     backward_flows[i] = cap; // residualFlow[(dest, source)] = cap
     Excess_total += cap;
-    PRINTF("Source: %d's neighbor: %d\n", source, dest);
   }
 }
 
@@ -588,8 +588,6 @@ void ResidualGraph::printGraph() const {
       int c = g[u*num_nodes+v];
       int f = ff[u*num_nodes+v];
       int b = bf[u*num_nodes+v];
-      //printf("(%d, f%d, b%d)", c, f, b);
-      printf("(%d)", c);
     }
     std::cout << std::endl;
   }
@@ -602,65 +600,31 @@ ResidualGraph::maxflow(int source, int sink)
   this->sink = sink;
 
   if (!checkPath()) {
-    printf("No path from source to sink\n");
     return;
   }
-  std::cout << "brefore preflow: \n";
-  print();
   preflow(source);
-  std::cout << "after preflow: \n";
-  print();
 
-  printf("Preflow done\n");
-  printf("Excess total: %d\n", Excess_total);
-
-
+  using namespace std::chrono; 
+  auto start = high_resolution_clock::now();
 
   int active_node = findActiveNode();
   while(active_node != -1) {
-    /* If there is an outgoing edge (v, w) of v in Gf with h(v) = h(w) + 1 */
-    //printf("#active nodes: %d\n", countActiveNodes());
     if (!push(active_node)) {
-      //printf("Relabeling %d\n", active_node);
       relabel(active_node);
     }
     active_node = findActiveNode();
-
   }
+  auto end = high_resolution_clock::now();
 
-  // print();
-  // printGraph();
-  // std::cout << "delete:\n";
-  // for(int u = 0; u < num_nodes; u++){
-  //   for (int i = offsets[u]; i < offsets[u + 1]; ++i) {
-  //     int dest = destinations[i];
-  //     int cap = capacities[i];
-  //     int bflow = backward_flows[i];
-  //     int fflow = forward_flows[i];
-
-  //     if(cap != 0 && cap == fflow){
-  //       printf("%d --%d--> %d\n", u, cap, dest);
-  //     }
-  //   }
-  // }
-
-  // std::cout << "heights: ";
-  // for(int i = 0; i < num_nodes; i ++){
-  //     printf("%d ", heights[i]);
-  // }
-  // std::cout << "\n";
-
-  // std::cout << "excesses: ";
-  // for(int i = 0; i < num_nodes; i ++){
-  //     printf("%d ", excesses[i]);
-  // }
-  // std::cout << "\n";
-
-
-  /* Calculate Max flow */
-  /* Sum all all rflow(u, sink)*/
-  printf("Max flow: %d\n", excesses[sink]);
-
+  // Info Print
+  auto nanos      = duration_cast<nanoseconds>(end-start).count();
+  auto micros     = duration_cast<microseconds>(end-start).count();
+  auto millis     = duration_cast<milliseconds>(end-start).count();
+  std::cout << "### " 
+    << nanos    << " nanos, " 
+    << micros   << " micros, " 
+    << millis   << " millis, " 
+    << num_nodes << ", " << num_edges << ", " << source << ", " << sink << ", " << excesses[sink] << std::endl;
 }
 
 

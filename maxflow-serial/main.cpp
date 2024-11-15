@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
                 filename = optarg;
                 switch(file_type) {
                     case 0:
-                        PRINTF("Loading txt file\n");
+                        //PRINTF("Loading txt file\n");
                         graph.buildFromTxtFile(filename);
                         break;
                     case 1:
@@ -56,14 +56,14 @@ int main(int argc, char** argv) {
                 break;
             case 's':
                 source = atoi(optarg);
-                PRINTF("Source: %d\n",source);
+                //PRINTF("Source: %d\n",source);
                 break;
             case 't':
                 sink = atoi(optarg);
-                PRINTF("Sink: %d\n",sink);
+                //PRINTF("Sink: %d\n",sink);
                 break;
             case 'a':
-                PRINTF("Autotuning mode\n");
+                //PRINTF("Autotuning mode\n");
                 auto_tune = true;
                 break;
         }
@@ -74,18 +74,18 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    PRINTF("Building residual graph\n");
+    //PRINTF("Building residual graph\n");
 
     ResidualGraph rgraph;
     rgraph.buildFromCSRGraph(graph);
-    PRINTF("Finished building residual graph\n");
+    //PRINTF("Finished building residual graph\n");
     
     if (!auto_tune) {
-        printf("Starting push-relabel on %s\n", filename);
+        //printf("Starting push-relabel on %s\n", filename);
 
         if (file_type == 0 || file_type == 1) {
             // If the graph is from txt or binary file, we need to set source and sink
-            printf("Source: %d Sink: %d\n",source,sink);
+            //printf("Source: %d Sink: %d\n",source,sink);
             rgraph.source = source;
             rgraph.sink = sink;
             
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
             // If the graph is from DIMACS file, we get the source and sink from the file
             rgraph.source = graph.source_node;
             rgraph.sink = graph.sink_node;
-            printf("Source: %d Sink: %d\n",rgraph.source,rgraph.sink);
+            //printf("Source: %d Sink: %d\n",rgraph.source,rgraph.sink);
             rgraph.maxflow(rgraph.source, rgraph.sink);
         }
         
