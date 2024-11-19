@@ -12,6 +12,7 @@
 #include "assert.h"
 #include "mmio.h"
 #include <chrono>
+#include <iomanip>
 
 CSRGraph::CSRGraph(const std::string &filename) {
   if (filename.substr(filename.find_last_of(".") + 1) == "txt") {
@@ -625,6 +626,50 @@ ResidualGraph::maxflow(int source, int sink)
     << micros   << " micros, " 
     << millis   << " millis, " 
     << num_nodes << ", " << num_edges << ", " << source << ", " << sink << ", " << excesses[sink] << std::endl;
+    int V = num_nodes;
+    int E = num_edges;
+
+    printf("offsets: {");
+    for (int i=0; i < V; i++) {
+        printf("%d, ", offsets[i]);
+    }
+    printf("};\n\n\n");
+
+    printf("dests: {");
+    for (int i=0; i < E; i++) {
+      printf("%d, ", destinations[i]);
+    }
+    printf("};\n\n\n");
+
+    printf("caps: {");
+    for (int i=0; i < E; i++) {
+      printf("%d, ", capacities[i]);
+    }
+    printf("};\n\n\n");
+
+    printf("h: {");
+    for (int i=0; i < V; i++) {
+        printf("%d, ", heights[i]);
+    }
+    printf("};\n");
+
+    printf("e: {");
+    for (int i=0; i < V; i++) {
+        printf("%d, ", excesses[i]);
+    }
+    printf("};\n");
+
+    printf("ff: {");
+    for (int i=0; i < E; i++) {
+        std::cout << std::setw(5) << forward_flows[i];
+    }
+    printf("};\n");
+
+    printf("bf: {");
+    for (int i=0; i < E; i++) {
+        std::cout << std::setw(5) << backward_flows[i];
+    }
+    printf("};\n");
 }
 
 
